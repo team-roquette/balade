@@ -1,0 +1,193 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1750990337610878
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 224155733856744900}
+  - component: {fileID: 114399366584703024}
+  - component: {fileID: 82693070040267552}
+  m_Layer: 5
+  m_Name: Talker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &224155733856744900
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1750990337610878}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.0125, y: 0.0125, z: 0.0125}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 19400, y: -19400}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &114399366584703024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1750990337610878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad113b81487b0584096f8cef28ebac05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundListener: {fileID: 1750990337610878}
+  font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  textGUI: {fileID: 0}
+  pageNumberGUI: {fileID: 0}
+  nextPagePromptGUI: {fileID: 0}
+  nextPagePromptText: Hit E ...
+  textPageKey: 101
+  letters:
+  - {fileID: 8300000, guid: 781881be4a795a54485e405a7b574586, type: 3}
+  - {fileID: 8300000, guid: 362456ececf90b24dba890dcdaee4190, type: 3}
+  - {fileID: 8300000, guid: 6225a822008b6a94aad2796493da2bca, type: 3}
+  - {fileID: 8300000, guid: ab34c36398f17574c94524f130930792, type: 3}
+  - {fileID: 8300000, guid: ec50d91eed550c642b78972300e1abad, type: 3}
+  - {fileID: 8300000, guid: bb5d6feff8377ce4f8ff10f430c47103, type: 3}
+  - {fileID: 8300000, guid: 28cdf707e3ab4d54fb43fd7195172b5f, type: 3}
+  - {fileID: 8300000, guid: 56ea148853541f44aa6362d74bb6d156, type: 3}
+  - {fileID: 8300000, guid: 3c7a5d4e72324ca419c0e953f9f095a0, type: 3}
+  - {fileID: 8300000, guid: ecd9a286988ac4546890d6e754a576a2, type: 3}
+  - {fileID: 8300000, guid: 69dcbafec641abb4cb8451238214c038, type: 3}
+  - {fileID: 8300000, guid: ef4daa346434edf46b3876a98ba15e83, type: 3}
+  - {fileID: 8300000, guid: 1eb2e247d470f714491aa584a26ec367, type: 3}
+  - {fileID: 8300000, guid: a6a483006c685c04691fcaf22573de5d, type: 3}
+  - {fileID: 8300000, guid: 1ae85f43d2e88f34296365fe3dc5f088, type: 3}
+  - {fileID: 8300000, guid: 15b310a0c4675014ca6911a0a3683b35, type: 3}
+  - {fileID: 8300000, guid: a3c95138b69ece446a6aa8fbdc15f9a6, type: 3}
+  - {fileID: 8300000, guid: 9fe27c981a3cb564393eeec04aba40b6, type: 3}
+  - {fileID: 8300000, guid: 42420402a788d274d93e943ca02ddabb, type: 3}
+  - {fileID: 8300000, guid: b5a159352ef99994aab3d4fce3af98b8, type: 3}
+  - {fileID: 8300000, guid: 0a432af8824bd7e419166aa8ef8ecb83, type: 3}
+  - {fileID: 8300000, guid: 6868e9be1ce3a854386be7bb34411447, type: 3}
+  - {fileID: 8300000, guid: 82f563e13360d2841abf0baca75d2db4, type: 3}
+  - {fileID: 8300000, guid: e926c37f507d68e47b630c9f9190414a, type: 3}
+  - {fileID: 8300000, guid: 6a16fdbde0b32144ba9f93999cca810a, type: 3}
+  - {fileID: 8300000, guid: a9e19f4ae3644794ca47f2015987be0f, type: 3}
+  letterTime: 0.5
+  useLetterSounds: 1
+  canChangeSpeed: 1
+  useSounds: 1
+  useRandomPitch: 1
+  basePitch: 1.5
+  pitchShift: 0.4
+  speakAtInstantiation: 1
+  sentences:
+  - Hello there, fellow traveler!
+  - It's dangerous to go alone!
+  - Well no, not really. I just really wanna come along!
+--- !u!82 &82693070040267552
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1750990337610878}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 256
+  DopplerLevel: 1
+  MinDistance: 495.0495
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
