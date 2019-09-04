@@ -18,6 +18,8 @@ public class input_test : MonoBehaviour
     public Text angleText;
     public Image dialogImage;
 
+    private bool isWheelOpen = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,21 +30,39 @@ public class input_test : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("DialogWheel"))
+        if (Input.GetButton("DialogWheel"))
         {
-            tab.SetActive(false);
-            wheel.SetActive(!wheel.activeSelf);
+            //tab.SetActive(false);
+            //wheel.SetActive(true);
         }
+        else
+        {
+            //wheel.SetActive(false);
+            if (EventSystem.current.currentSelectedGameObject != null)
+            {
+                OnWheelButtonClicked();
+            }
+        }
+
+        /*if(EventSystem.current.currentSelectedGameObject != null)
+        {
+            if (Input.GetButtonDown("Validate"))
+            {
+                OnWheelButtonClicked();
+            }
+        }*/
 
         if (Input.GetButtonDown("DialogTab"))
         {
-            wheel.SetActive(false);
+            //wheel.SetActive(false);
             tab.SetActive(!tab.activeSelf);
         }
 
         UpdateDialogWheel();
 
         UpdateDialogTab();
+
+        Debug.Log("isWheelOpen" + isWheelOpen);
 
 
     }
@@ -55,6 +75,10 @@ public class input_test : MonoBehaviour
 
         if (horizontal != 0 || vertical != 0)
         {
+
+            wheel.SetActive(true);
+            isWheelOpen = true;
+
             float angle = Mathf.Atan2(Input.GetAxis("HorizontalJoy"), Input.GetAxis("VerticalJoy")) * Mathf.Rad2Deg;
             if (angle > -22.5f && angle < 22.5f)
             {
@@ -91,12 +115,20 @@ public class input_test : MonoBehaviour
         }
         else
         {
-            EventSystem.current.SetSelectedGameObject(null);
+            //EventSystem.current.SetSelectedGameObject(null);
+
+            StartCoroutine(WaitResponse());
+
+            if (!isWheelOpen)
+            {
+                wheel.SetActive(false);
+            }
+
         }
 
 
-        horizontalText.text = "Horizontal : " + Input.GetAxis("HorizontalJoy");
-        verticalText.text = "Vertical : " + Input.GetAxis("VerticalJoy");
+        horizontalText.text = "Horizontal : " + Input.GetAxis("Axis 1");
+        verticalText.text = "Vertical : " + Input.GetAxis("Axis 2");
         angleText.text = "Angle : " + Mathf.Atan2(Input.GetAxis("HorizontalJoy"), Input.GetAxis("VerticalJoy")) * Mathf.Rad2Deg;
 
     }
@@ -145,8 +177,15 @@ public class input_test : MonoBehaviour
         dialogImage.sprite = EventSystem.current.currentSelectedGameObject.GetComponent<Image>().sprite;
 
 
-        wheel.SetActive(false);
+        //wheel.SetActive(false);
 
+    }
+
+    IEnumerator WaitResponse()
+    {
+        isWheelOpen = true;
+        yield return new WaitForSeconds(2);
+        isWheelOpen = false;
     }
 
 }
