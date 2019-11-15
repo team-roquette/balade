@@ -1613,11 +1613,19 @@ namespace PixelCrushers.DialogueSystem
         {
             // Unity 2017.3 bug IL2CPP can't do lambdas:
             //Lua.RegisterFunction("ShowAlert", null, SymbolExtensions.GetMethodInfo(() => LuaShowAlert(string.Empty)));
+            //Lua.RegisterFunction("ShowAlert", null, typeof(DialogueSystemController).GetMethod("LuaShowAlert"));
 
-            Lua.RegisterFunction("ShowAlert", null, typeof(DialogueSystemController).GetMethod("LuaShowAlert"));
-            Lua.RegisterFunction("HideAlert", null, typeof(DialogueSystemController).GetMethod("LuaHideAlert"));
-            Lua.RegisterFunction("RandomizeNextEntry", this, typeof(DialogueSystemController).GetMethod("RandomizeNextEntry"));
-            Lua.RegisterFunction("UpdateTracker", this, typeof(DialogueSystemController).GetMethod("SendUpdateTracker"));
+            // Unregister previous instance's versions first:
+            Lua.UnregisterFunction("RandomizeNextEntry"); 
+            Lua.UnregisterFunction("UpdateTracker");
+            // Then register functions:
+            Lua.RegisterFunction("ShowAlert", null, SymbolExtensions.GetMethodInfo(() => LuaShowAlert(string.Empty)));
+            Lua.RegisterFunction("HideAlert", null, SymbolExtensions.GetMethodInfo(() => LuaHideAlert()));
+            Lua.RegisterFunction("RandomizeNextEntry", this, SymbolExtensions.GetMethodInfo(() => RandomizeNextEntry()));
+            Lua.RegisterFunction("UpdateTracker", this, SymbolExtensions.GetMethodInfo(() => SendUpdateTracker()));
+            Lua.RegisterFunction("GetEntryText", null, SymbolExtensions.GetMethodInfo(() => GetEntryText((double)0, string.Empty)));
+            Lua.RegisterFunction("GetEntryBool", null, SymbolExtensions.GetMethodInfo(() => GetEntryBool((double)0, string.Empty)));
+            Lua.RegisterFunction("GetEntryNumber", null, SymbolExtensions.GetMethodInfo(() => GetEntryNumber((double)0, string.Empty)));
         }
 
         private void UnregisterLuaFunctions()
@@ -1626,6 +1634,9 @@ namespace PixelCrushers.DialogueSystem
             Lua.UnregisterFunction("HideAlert");
             Lua.UnregisterFunction("RandomizeNextEntry");
             Lua.UnregisterFunction("UpdateTracker");
+            Lua.UnregisterFunction("GetEntryText");
+            Lua.UnregisterFunction("GetEntryBool");
+            Lua.UnregisterFunction("GetEntryNumber");
         }
 
         public void SendUpdateTracker()
@@ -1641,6 +1652,30 @@ namespace PixelCrushers.DialogueSystem
         public static void LuaHideAlert()
         {
             DialogueManager.HideAlert();
+        }
+
+        private static DialogueEntry GetDialogueEntryInCurrentConversation(double entryID)
+        {
+            if (!DialogueManager.isConversationActive) return null;
+            return DialogueManager.masterDatabase.GetDialogueEntry(DialogueManager.lastConversationID, (int)entryID);
+        }
+
+        private static string GetEntryText(double entryID, string fieldName)
+        {
+            var entry = GetDialogueEntryInCurrentConversation(entryID);
+            return (entry != null) ? Field.LookupValue(entry.fields, fieldName) : string.Empty;
+        }
+
+        private static bool GetEntryBool(double entryID, string fieldName)
+        {
+            var entry = GetDialogueEntryInCurrentConversation(entryID);
+            return (entry != null) ? Field.LookupBool(entry.fields, fieldName) : false;
+        }
+
+        private static double GetEntryNumber(double entryID, string fieldName)
+        {
+            var entry = GetDialogueEntryInCurrentConversation(entryID);
+            return (entry != null) ? Field.LookupFloat(entry.fields, fieldName) : 0;
         }
 
         public void RandomizeNextEntry()
@@ -1773,32 +1808,31 @@ namespace PixelCrushers.DialogueSystem
         }
 
 #if EVALUATION_VERSION
-		private GUIStyle evaluationWatermarkStyle = null;
-		private Rect watermarkRect1;
-		private Rect watermarkRect2;
-		
-		public void OnGUI() {
-			if (Camera.main == null) return;
-			if (Camera.main.GetComponent<GUILayer>() == null) Camera.main.gameObject.AddComponent<GUILayer>();
-			if (evaluationWatermarkStyle == null) {
-				evaluationWatermarkStyle = new GUIStyle(GUI.skin.label);
-				evaluationWatermarkStyle.fontSize = 20;
-				evaluationWatermarkStyle.fontStyle = FontStyle.Bold;
-				evaluationWatermarkStyle.alignment = TextAnchor.MiddleCenter;
-				evaluationWatermarkStyle.normal.textColor = new Color(1, 1, 1, 0.5f);
-				Vector2 size = evaluationWatermarkStyle.CalcSize(new GUIContent("Evaluation Version"));
-                if (Random.value < 0.5f) {
-                    watermarkRect1 = new Rect(Screen.width - size.x - 20, 0, size.x + 20, size.y);
-                    watermarkRect2 = new Rect(Screen.width - size.x - 20, size.y - 8, size.x + 20, size.y);
-                } else {
-                    watermarkRect1 = new Rect(20, Screen.height - 2 * size.y - 8 , size.x + 20, size.y);
-                    watermarkRect2 = new Rect(20, Screen.height - size.y - 8, size.x + 20, size.y);
-                }
-            }
-			GUI.Label(watermarkRect1, "Dialogue System", evaluationWatermarkStyle);
-			GUI.Label(watermarkRect2, "Evaluation Version", evaluationWatermarkStyle);
-		}
+
+        private GameObject watermark = null;
+
+        protected virtual void LateUpdate()
+        {
+            if (watermark != null) return;
+            watermark = new GameObject("Eval");
+            watermark.transform.SetParent(transform);
+            var canvas = watermark.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 16383;
+            Destroy(watermark.GetComponent<UnityEngine.UI.GraphicRaycaster>());
+            Destroy(watermark.GetComponent<UnityEngine.UI.CanvasScaler>());
+            var text = watermark.AddComponent<UnityEngine.UI.Text>();
+            text.text = "Dialogue System\nEvaluation Version";
+            text.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            text.fontSize = 24;
+            text.fontStyle = FontStyle.Bold;
+            text.color = new Color(1, 1, 1, 0.75f);
+            text.alignment = (Random.value < 0.5f) ? TextAnchor.UpperLeft: TextAnchor.LowerRight;
+            text.raycastTarget = false;
+        }
+
 #endif
+
 
     }
 

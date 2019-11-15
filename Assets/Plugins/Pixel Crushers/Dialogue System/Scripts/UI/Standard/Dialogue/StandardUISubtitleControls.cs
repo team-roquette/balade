@@ -144,7 +144,6 @@ namespace PixelCrushers.DialogueSystem
             }
         }
 
-
         private bool DialogueActorUsesBarkUI(DialogueActor dialogueActor)
         {
             return dialogueActor != null && dialogueActor.GetSubtitlePanelNumber() == SubtitlePanelNumber.UseBarkUI;
@@ -172,7 +171,6 @@ namespace PixelCrushers.DialogueSystem
                     return (0 <= index && index < m_builtinPanels.Count) ? m_builtinPanels[index] : null;
             }
         }
-
 
         private bool SubtitleUsesBarkUI(Subtitle subtitle)
         {
@@ -203,6 +201,98 @@ namespace PixelCrushers.DialogueSystem
             {
                 m_useBarkUIs.Remove(dialogueActor.transform);
             }
+        }
+
+        #endregion
+
+        #region Save & Load Actor Panel Cache
+
+        // Queued panel numbers to apply when starting a conversation.
+        private List<string> m_queuedActorGOs = null;
+        private List<SubtitlePanelNumber> m_queuedActorGOPanels = null;
+        private List<int> m_queuedActorIDs = null;
+        private List<SubtitlePanelNumber> m_queuedActorIDPanels = null;
+
+        /// <summary>
+        /// Record the current actor panel cache values for saved games (ConversationStateSaver)
+        /// so the cache can be restored when loading a game. Only saves built-in panel numbers,
+        /// not custom panels.
+        /// </summary>
+        public virtual void RecordActorPanelCache(out List<string> actorGOs, out List<SubtitlePanelNumber> actorGOPanels, 
+            out List<int> actorIDs, out List<SubtitlePanelNumber> actorIDPanels)
+        {
+            actorGOs = new List<string>();
+            actorGOPanels = new List<SubtitlePanelNumber>();
+            actorIDs = new List<int>();
+            actorIDPanels = new List<SubtitlePanelNumber>();
+            foreach (var kvp in m_actorPanelCache)
+            {
+                if (kvp.Key == null) continue;
+                var panelNumber = GetSubtitlePanelNumberFromPanel(kvp.Value);
+                if (panelNumber == SubtitlePanelNumber.Custom) continue;
+                actorGOs.Add(kvp.Key.name);
+                actorGOPanels.Add(panelNumber);
+            }
+            foreach (var kvp in m_actorIdOverridePanel)
+            {
+                actorIDs.Add(kvp.Key);
+                actorIDPanels.Add((GetSubtitlePanelNumberFromPanel(kvp.Value)));
+            }
+        }
+
+        /// <summary>
+        /// Queues actor panel caches to be applies when the next conversation starts.
+        /// </summary>
+        public virtual void QueueSavedActorPanelCache(List<string> actorGOs, List<SubtitlePanelNumber> actorGOPanels,
+            List<int> actorIDs, List<SubtitlePanelNumber> actorIDPanels)
+        {
+            m_queuedActorGOs = actorGOs;
+            m_queuedActorGOPanels = actorGOPanels;
+            m_queuedActorIDs = actorIDs;
+            m_queuedActorIDPanels = actorIDPanels;
+        }
+
+        /// <summary>
+        /// Apply any actor panel cache values that ConversationStateSaver may have
+        /// queued when loading a saved game. Only applies built-in panel numbers,
+        /// not custom panels.
+        /// </summary>
+        public virtual void ApplyQueuedActorPanelCache()
+        {
+            try
+            {
+                if (m_queuedActorGOs == null) return; // Nothing queued.
+                for (int i = 0; i < m_queuedActorGOs.Count; i++)
+                {
+                    var actorGO = GameObject.Find(m_queuedActorGOs[i]);
+                    if (actorGO == null) continue;
+                    var panel = GetPanelFromNumber(m_queuedActorGOPanels[i], null);
+                    if (panel == null) continue;
+                    m_actorPanelCache[actorGO.transform] = panel;
+                }
+                for (int i = 0; i < m_queuedActorIDs.Count; i++)
+                {
+                    var panel = GetPanelFromNumber(m_queuedActorIDPanels[i], null);
+                    if (panel == null) continue;
+                    m_actorIdOverridePanel[m_queuedActorIDs[i]] = panel;
+                }
+            }
+            finally {
+                m_queuedActorGOs = null;
+                m_queuedActorGOPanels = null;
+                m_queuedActorIDs = null;
+                m_queuedActorIDPanels = null;
+            }
+        }
+
+        protected virtual SubtitlePanelNumber GetSubtitlePanelNumberFromPanel(StandardUISubtitlePanel panel)
+        {
+            if (panel == m_defaultNPCPanel || panel == m_defaultPCPanel) return SubtitlePanelNumber.Default;
+            for (int i = 0; i < m_builtinPanels.Count; i++)
+            {
+                if (panel == m_builtinPanels[i]) return PanelNumberUtility.IntToSubtitlePanelNumber(i);
+            }
+            return SubtitlePanelNumber.Custom;
         }
 
         #endregion
@@ -388,6 +478,8 @@ namespace PixelCrushers.DialogueSystem
         /// </summary>
         public void OpenSubtitlePanelsOnStartConversation()
         {
+            ApplyQueuedActorPanelCache();
+
             var conversation = DialogueManager.MasterDatabase.GetConversation(DialogueManager.lastConversationStarted);
             if (conversation == null) return;
             HashSet<StandardUISubtitlePanel> checkedPanels = new HashSet<StandardUISubtitlePanel>();
@@ -414,19 +506,15 @@ namespace PixelCrushers.DialogueSystem
             checkedActorIDs.Add(actorID);
             var actor = DialogueManager.MasterDatabase.GetActor(actorID);
             if (actor == null) return;
-            var actorTransform = CharacterInfo.GetRegisteredActorTransform(actor.Name);
-            if (actorTransform == null)
-            {
-                var go = GameObject.Find(actor.Name);
-                if (go != null) actorTransform = go.transform;
-            }
+            var actorTransform = GetActorTransform(actor.Name);
             DialogueActor dialogueActor;
             var panel = GetActorTransformPanel(actorTransform, actor.IsPlayer ? m_defaultPCPanel : m_defaultNPCPanel, out dialogueActor);
             if (m_actorIdOverridePanel.ContainsKey(actor.id))
             {
                 panel = m_actorIdOverridePanel[actor.id];
             }
-            if (checkedPanels.Contains(panel)) return;
+            if (panel == null && Debug.isDebugBuild) Debug.LogWarning("Dialogue System: Can't determine what subtitle panel to use for " + actor.Name, actorTransform);
+            if (panel == null || checkedPanels.Contains(panel)) return;
             checkedPanels.Add(panel);
             if (panel.visibility == UIVisibility.AlwaysFromStart)
             {
@@ -436,6 +524,45 @@ namespace PixelCrushers.DialogueSystem
 
                 m_lastActorToUsePanel[panel] = actorID;
                 m_lastPanelUsedByActor[actorID] = panel;
+            }
+        }
+
+        protected Transform GetActorTransform(string actorName)
+        {
+            var actorTransform = CharacterInfo.GetRegisteredActorTransform(actorName);
+            if (actorTransform == null)
+            {
+                var go = GameObject.Find(actorName);
+                if (go != null) actorTransform = go.transform;
+            }
+            return actorTransform;
+        }
+
+        public void OpenSubtitlePanelLikeStart(SubtitlePanelNumber subtitlePanelNumber)
+        {
+            var panel = GetPanelFromNumber(subtitlePanelNumber, null);
+            if (panel == null || panel.isOpen) return;
+            var conversation = DialogueManager.MasterDatabase.GetConversation(DialogueManager.lastConversationStarted);
+            if (conversation == null) return;
+
+            for (int i = 0; i < conversation.dialogueEntries.Count; i++)
+            {
+                var actorID = conversation.dialogueEntries[i].ActorID;
+                var actor = DialogueManager.MasterDatabase.GetActor(actorID);
+                var actorTransform = GetActorTransform(actor.Name);
+                DialogueActor dialogueActor;
+                var actorPanel = GetActorTransformPanel(actorTransform, actor.IsPlayer ? m_defaultPCPanel : m_defaultNPCPanel, out dialogueActor);
+                if (m_actorIdOverridePanel.ContainsKey(actor.id))
+                {
+                    panel = m_actorIdOverridePanel[actor.id];
+                }
+                if (actorPanel == panel)
+                {
+                    var actorPortrait = (dialogueActor != null && dialogueActor.GetPortraitSprite() != null) ? dialogueActor.GetPortraitSprite() : actor.GetPortraitSprite();
+                    var actorName = CharacterInfo.GetLocalizedDisplayNameInDatabase(actor.Name);
+                    panel.OpenOnStartConversation(actorPortrait, actorName, dialogueActor);
+                    return;
+                }
             }
         }
 

@@ -19,6 +19,7 @@ namespace PixelCrushers.DialogueSystem
         public void Awake()
         {
             control = GetComponent<UnityEngine.UI.Text>();
+            Tools.DeprecationWarning(this);
         }
 
         public void Start()

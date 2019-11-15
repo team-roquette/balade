@@ -71,6 +71,7 @@ namespace PixelCrushers.DialogueSystem
         {
             m_initializedAnimator = true;
             if (mainPanel != null) mainPanel.Open();
+            standardSubtitleControls.ApplyQueuedActorPanelCache();
         }
 
         private void HidePanel()

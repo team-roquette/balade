@@ -186,12 +186,15 @@ namespace PixelCrushers.DialogueSystem
                             if (DialogueDebug.logWarnings) Debug.LogWarning(string.Format("{0}: Bark (speaker={1}, listener={2}): '{3}' can't find a valid dialogue entry", new System.Object[] { DialogueDebug.Prefix, speaker, listener, conversationTitle }), speaker);
                             yield break;
                         }
-                        if (firstState.hasNPCResponse)
-                        {
-                            CharacterInfo tempInfo = barkState.subtitle.speakerInfo;
-                            barkState.subtitle.speakerInfo = barkState.subtitle.listenerInfo;
-                            barkState.subtitle.listenerInfo = tempInfo;
-                        }
+
+                        //--- Was: (swapping speaker & listener no longer appropriate)
+                        //if (firstState.hasNPCResponse)
+                        //{
+                        //    CharacterInfo tempInfo = barkState.subtitle.speakerInfo;
+                        //    barkState.subtitle.speakerInfo = barkState.subtitle.listenerInfo;
+                        //    barkState.subtitle.listenerInfo = tempInfo;
+                        //}
+
                         if (DialogueDebug.logInfo) Debug.Log(string.Format("{0}: Bark (speaker={1}, listener={2}): '{3}'", new System.Object[] { DialogueDebug.Prefix, speaker, listener, barkState.subtitle.formattedText.text }), speaker);
                         InformParticipantsLine(DialogueSystemMessages.OnBarkLine, speaker, barkState.subtitle);
 
@@ -227,17 +230,22 @@ namespace PixelCrushers.DialogueSystem
 
         private static Sequencer PlayBarkSequence(Subtitle subtitle, Transform speaker, Transform listener)
         {
-            if (!string.IsNullOrEmpty(subtitle.sequence))
+            return PlayBarkSequence(subtitle.formattedText.text, subtitle.sequence, subtitle.entrytag, speaker, listener);
+        }
+
+        private static Sequencer PlayBarkSequence(string barkText, string sequence, string entrytag, Transform speaker, Transform listener)
+        {
+            if (!string.IsNullOrEmpty(sequence))
             {
-                var sequence = Sequencer.ReplaceShortcuts(subtitle.sequence);
+                sequence = Sequencer.ReplaceShortcuts(sequence);
                 if (sequence.Contains(SequencerKeywords.End))
                 {
-                    var text = subtitle.formattedText.text;
+                    var text = barkText;
                     int numCharacters = string.IsNullOrEmpty(text) ? 0 : Tools.StripRichTextCodes(text).Length;
                     var endDuration = Mathf.Max(DialogueManager.displaySettings.GetMinSubtitleSeconds(), numCharacters / Mathf.Max(1, DialogueManager.displaySettings.GetSubtitleCharsPerSecond()));
                     sequence = sequence.Replace(SequencerKeywords.End, endDuration.ToString(System.Globalization.CultureInfo.InvariantCulture));
                 }
-                return DialogueManager.PlaySequence(sequence, speaker, listener, false, false, subtitle.entrytag);
+                return DialogueManager.PlaySequence(sequence, speaker, listener, false, false, entrytag);
             }
             else
             {
@@ -338,7 +346,7 @@ namespace PixelCrushers.DialogueSystem
             Sequencer sequencer = null;
             if (!(skipSequence || string.IsNullOrEmpty(subtitle.sequence)))
             {
-                sequencer = DialogueManager.PlaySequence(subtitle.sequence, speaker, listener, false, false, subtitle.entrytag);
+                sequencer = PlayBarkSequence(subtitle, speaker, listener);
             }
             LastSequencer = sequencer;
 

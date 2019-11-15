@@ -1,8 +1,10 @@
 fileFormatVersion: 2
-guid: 31ec55cd200e5924685079e8c4c69a16
-folderAsset: yes
+guid: 630bf89a42bf760458299c96a71e7f04
+labels:
+- Cutscene
+- Sequencer
+- Usequencer
 DefaultImporter:
-  externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 

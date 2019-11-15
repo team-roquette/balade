@@ -105,7 +105,7 @@ namespace PixelCrushers
         /// </summary>
         public bool HasLanguage(string languageName)
         {
-            return languages.ContainsKey(languageName);
+            return string.IsNullOrEmpty(languageName) || languages.ContainsKey(languageName);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace PixelCrushers
         /// </summary>
         public bool HasLanguage(int languageID)
         {
-            return languages.ContainsValue(languageID);
+            return languageID == 0 || languages.ContainsValue(languageID);
         }
 
         /// <summary>
