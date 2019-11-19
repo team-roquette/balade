@@ -16,9 +16,9 @@ public class ConversationsManager : MonoBehaviour
         
     }
 
-    public void OpenConversation(string conversationName, Transform player, Transform conversant) {
+    public void OpenConversation(string conversationName, Transform player, Transform conversant, int dialogEntry) {
         if(PixelCrushers.DialogueSystem.DialogueManager.ConversationHasValidEntry(conversationName)) {
-            PixelCrushers.DialogueSystem.DialogueManager.StartConversation(conversationName, player, conversant);
+            PixelCrushers.DialogueSystem.DialogueManager.StartConversation(conversationName, player, conversant, dialogEntry);
         }
     }
 }

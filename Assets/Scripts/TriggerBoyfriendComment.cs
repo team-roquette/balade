@@ -7,6 +7,7 @@ public class TriggerBoyfriendComment : MonoBehaviour
     private Transform player; 
     private Transform boyfriend;
     public string conversationName; 
+    public int dialogEntry;
     public ConversationsManager conversationsManager;
     // Start is called before the first frame update
     void Start()
@@ -23,7 +24,7 @@ public class TriggerBoyfriendComment : MonoBehaviour
 
     void OnTriggerEnter(Collider other) {
         if(other.tag == "Boyfriend") {
-            conversationsManager.OpenConversation(conversationName, player, boyfriend);
+            conversationsManager.OpenConversation(conversationName, player, boyfriend, dialogEntry);
         }
     }
 }
