@@ -13,10 +13,10 @@ public class input_test : MonoBehaviour
     public Button[] wheelButtons;
     public Button[] tabButtons;
 
-    public Text horizontalText;
-    public Text verticalText;
-    public Text angleText;
-    public Image dialogImage;
+    //public Text horizontalText;
+    //public Text verticalText;
+    //public Text angleText;
+    //public Image dialogImage;
 
     private bool isWheelOpen = false;
 
@@ -62,7 +62,7 @@ public class input_test : MonoBehaviour
 
         UpdateDialogTab();
 
-        Debug.Log("isWheelOpen" + isWheelOpen);
+        //Debug.Log("isWheelOpen" + isWheelOpen);
 
 
     }
@@ -127,9 +127,9 @@ public class input_test : MonoBehaviour
         }
 
 
-        horizontalText.text = "Horizontal : " + Input.GetAxis("Axis 1");
+        /*horizontalText.text = "Horizontal : " + Input.GetAxis("Axis 1");
         verticalText.text = "Vertical : " + Input.GetAxis("Axis 2");
-        angleText.text = "Angle : " + Mathf.Atan2(Input.GetAxis("HorizontalJoy"), Input.GetAxis("VerticalJoy")) * Mathf.Rad2Deg;
+        angleText.text = "Angle : " + Mathf.Atan2(Input.GetAxis("HorizontalJoy"), Input.GetAxis("VerticalJoy")) * Mathf.Rad2Deg;*/
 
     }
 
@@ -174,8 +174,11 @@ public class input_test : MonoBehaviour
 
          Debug.Log("current selected : " + EventSystem.current.currentSelectedGameObject);
 
-        dialogImage.sprite = EventSystem.current.currentSelectedGameObject.GetComponent<Image>().sprite;
+        //dialogImage.sprite = EventSystem.current.currentSelectedGameObject.GetComponent<Image>().sprite;
 
+        EventSystem.current.SetSelectedGameObject(null);
+
+        tab.SetActive(false);
 
         //wheel.SetActive(false);
 
