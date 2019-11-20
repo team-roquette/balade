@@ -153,8 +153,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa9509bae9a9c4fc5ae4bd8fb1dea591, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  transforms:
+  - {fileID: 1133436691}
+  - {fileID: 928305694}
   conversationName: New Conversation 1
-  dialogEntry: 2
+  playerIndex: 0
+  conversantIndex: 1
+  dialogEntryIndex: 2
   conversationsManager: {fileID: 1885751523}
 --- !u!135 &79268651
 SphereCollider:
@@ -834,8 +839,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa9509bae9a9c4fc5ae4bd8fb1dea591, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  transforms:
+  - {fileID: 1133436691}
+  - {fileID: 928305694}
   conversationName: New Conversation 1
-  dialogEntry: 1
+  playerIndex: 0
+  conversantIndex: 1
+  dialogEntryIndex: 1
   conversationsManager: {fileID: 1885751523}
 --- !u!1 &928305689
 GameObject:
@@ -1159,6 +1169,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 46d8f67db64114f97ac4bd9b1d2e4de1,
         type: 2}
+    - target: {fileID: 11426072, guid: 58ac37417e60e534f91138088a3e6f70, type: 3}
+      propertyPath: allowOnlyOneInstance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11426072, guid: 58ac37417e60e534f91138088a3e6f70, type: 3}
+      propertyPath: allowSimultaneousConversations
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 58ac37417e60e534f91138088a3e6f70, type: 3}
 --- !u!1 &1133436686
@@ -1562,6 +1580,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d4599f0c70a842d5904301b832b2b05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  transforms:
+  - {fileID: 1133436691}
+  - {fileID: 928305694}
 --- !u!4 &1885751524
 Transform:
   m_ObjectHideFlags: 0

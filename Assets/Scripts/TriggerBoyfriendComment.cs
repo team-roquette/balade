@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class TriggerBoyfriendComment : MonoBehaviour
 {
-    private Transform player; 
-    private Transform boyfriend;
+    public Transform[] transforms = new Transform[2];
     public string conversationName; 
-    public int dialogEntry;
+    public double playerIndex; 
+    public double conversantIndex;
+    public int dialogEntryIndex;
     public ConversationsManager conversationsManager;
     // Start is called before the first frame update
     void Start()
     {
-        player = GameObject.Find("Player").transform;
-        boyfriend = GameObject.Find("Boyfriend").transform;
+
     }
 
     // Update is called once per frame
@@ -24,7 +24,7 @@ public class TriggerBoyfriendComment : MonoBehaviour
 
     void OnTriggerEnter(Collider other) {
         if(other.tag == "Boyfriend") {
-            conversationsManager.OpenConversation(conversationName, player, boyfriend, dialogEntry);
+            conversationsManager.OpenConversation(conversationName, playerIndex, conversantIndex, dialogEntryIndex);
         }
     }
 }

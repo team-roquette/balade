@@ -1,13 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PixelCrushers.DialogueSystem;
 
 public class ConversationsManager : MonoBehaviour
 {
+
+    public Transform[] transforms = new Transform[2];
     // Start is called before the first frame update
     void Start()
     {
-        
+        Lua.RegisterFunction("OpenConversation", this, SymbolExtensions.GetMethodInfo(() => OpenConversation(string.Empty, double.NaN, double.NaN, double.NaN)));
     }
 
     // Update is called once per frame
@@ -16,9 +19,14 @@ public class ConversationsManager : MonoBehaviour
         
     }
 
-    public void OpenConversation(string conversationName, Transform player, Transform conversant, int dialogEntry) {
+    public void OpenConversation(string conversationName, double playerIndex, double conversantIndex, double dialogEntryIndex) {
+
+        int player = (int)playerIndex;
+        int conversant = (int)conversantIndex;
+        int dialogEntry = (int)dialogEntryIndex;
+
         if(PixelCrushers.DialogueSystem.DialogueManager.ConversationHasValidEntry(conversationName)) {
-            PixelCrushers.DialogueSystem.DialogueManager.StartConversation(conversationName, player, conversant, dialogEntry);
+            PixelCrushers.DialogueSystem.DialogueManager.StartConversation(conversationName, transforms[player], transforms[conversant], dialogEntry);
         }
     }
 }
