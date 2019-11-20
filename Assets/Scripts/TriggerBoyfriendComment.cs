@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class TriggerBoyfriendComment : MonoBehaviour
 {
-    public Transform[] transforms = new Transform[2];
     public string conversationName; 
     public double playerIndex; 
     public double conversantIndex;
