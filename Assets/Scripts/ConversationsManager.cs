@@ -26,7 +26,7 @@ public class ConversationsManager : MonoBehaviour
         int dialogEntry = (int)dialogEntryIndex;
 
         if(PixelCrushers.DialogueSystem.DialogueManager.ConversationHasValidEntry(conversationName)) {
-            PixelCrushers.DialogueSystem.DialogueManager.StartConversation(conversationName, Characters.charactersList[player], Characters.charactersList[conversant], dialogEntry);
+            PixelCrushers.DialogueSystem.DialogueManager.StartConversation(conversationName, Characters.charactersTransform[player], Characters.charactersTransform[conversant], dialogEntry);
         }
     }
 }

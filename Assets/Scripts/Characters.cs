@@ -5,7 +5,8 @@ using UnityEngine;
 public class Characters : MonoBehaviour
 {
     public static Characters characters;
-    public static Transform[] charactersList = new Transform[2]; 
+    public static GameObject[] charactersList = new GameObject[2]; 
+    public static Transform[] charactersTransform = new Transform[2];
 
     void Awake() {
         if(characters == null) {
@@ -17,8 +18,18 @@ public class Characters : MonoBehaviour
     }
 
     void Start() {
+        GetCharactersGameObject();
+        GetCharactersTransform();
+    }
 
-        charactersList[0] = GameObject.Find("Player").transform; 
-        charactersList[1] = GameObject.Find("Boyfriend").transform;
+    void GetCharactersGameObject() { 
+        charactersList[0] = GameObject.Find("Player"); 
+        charactersList[1] = GameObject.Find("Boyfriend");
+    }
+
+    void GetCharactersTransform() {
+        for (int i = 0; i > charactersList.Length ; i ++) {
+            charactersTransform[i] = charactersList[i].transform;
+        }
     }
 }
