@@ -5,6 +5,9 @@
 [Bb]uilds/
 Assets/AssetStoreTools*
 
+#Mac files 
+*.icloud
+
 # Visual Studio cache directory
 .vs/
 
